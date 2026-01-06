@@ -1,60 +1,86 @@
+// --------------------- DATOS ---------------------
+import { animales } from "../data/animales.js";
+import { sorteos } from "../data/sorteos.js";
+
+// --------------------- SECCIONES ---------------------
 const animalitosBtn = document.getElementById("animalitosBtn");
 const pollaHipicaBtn = document.getElementById("pollaHipicaBtn");
+const animalitosSection = document.querySelector(".animales-section");
+const pollaHipicaSection = document.querySelector(".polla-hipica-section");
 
-const animalesSection = document.querySelector(".animales-section");
-const pollaSection = document.querySelector(".polla-hipica-section");
-
-animalitosBtn.addEventListener("click", ()=>{
-  animalesSection.style.display="block";
-  pollaSection.style.display="none";
+// Tabs
+animalitosBtn.addEventListener("click", () => {
+  animalitosSection.style.display = "block";
+  pollaHipicaSection.style.display = "none";
+});
+pollaHipicaBtn.addEventListener("click", () => {
+  animalitosSection.style.display = "none";
+  pollaHipicaSection.style.display = "block";
 });
 
-pollaHipicaBtn.addEventListener("click", ()=>{
-  animalesSection.style.display="none";
-  pollaSection.style.display="block";
+// --------------------- RENDERIZAR LOTERÍAS ---------------------
+const sorteosContainer = document.getElementById("sorteos");
+sorteos.forEach(sorteo => {
+  const div = document.createElement("div");
+  div.classList.add("sorteo");
+  div.innerHTML = `<h4>${sorteo.nombre}</h4>`;
+  
+  const horariosDiv = document.createElement("div");
+  horariosDiv.classList.add("horarios");
+  sorteo.horarios.forEach(h => {
+    const btn = document.createElement("button");
+    btn.textContent = h;
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".horarios button").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+    });
+    horariosDiv.appendChild(btn);
+  });
+  
+  div.appendChild(horariosDiv);
+  sorteosContainer.appendChild(div);
 });
 
-// Renderizar animales
-const animalesContainer = document.getElementById("animalesContainer");
-animales.forEach(animal=>{
+// --------------------- RENDERIZAR ANIMALES ---------------------
+const animalesContainer = document.getElementById("animales");
+animales.forEach(animal => {
   const div = document.createElement("div");
   div.classList.add("animal");
   div.textContent = `${animal.numero} ${animal.nombre}`;
   animalesContainer.appendChild(div);
 
-  div.addEventListener("click", ()=>{
-    const monto = prompt(`Ingrese el monto para ${animal.nombre} (${animal.numero}):`);
-    if(monto && !isNaN(monto)){
-      div.dataset.monto=monto;
-      div.classList.add("active");
-      agregarTicket(animal.numero, animal.nombre, monto);
-    }
+  // Seleccionar animal y pedir monto
+  div.addEventListener("click", () => {
+    const monto = prompt(`Monto para ${animal.nombre} (${animal.numero}):`);
+    if (monto && !isNaN(monto)) agregarAlTicket(animal, parseFloat(monto));
   });
 });
 
-// Ticket
-const ticketTable = document.getElementById("ticketTable");
-function agregarTicket(numero,nombre,monto){
-  const row=document.createElement("div");
-  row.style.display="grid";
-  row.style.gridTemplateColumns="2fr 2fr 1fr 1fr";
-  row.textContent=`${numero} ${nombre} - Lotería X - 08:00 - $${monto}`;
-  ticketTable.appendChild(row);
-  actualizarTotal();
+// --------------------- TICKET ---------------------
+const ticketContainer = document.querySelector(".ticket .table");
+const totalDiv = document.getElementById("total");
+let total = 0;
+
+function agregarAlTicket(animal, monto) {
+  const div = document.createElement("div");
+  div.style.display = "grid";
+  div.style.gridTemplateColumns = "2fr 2fr 1fr 1fr";
+  div.innerHTML = `
+    <div>${animal.nombre}</div>
+    <div>Seleccionada</div>
+    <div>-</div>
+    <div>${monto}</div>
+  `;
+  ticketContainer.appendChild(div);
+  total += monto;
+  totalDiv.textContent = `TOTAL BS ${total}`;
 }
 
-function actualizarTotal(){
-  let total=0;
-  ticketTable.querySelectorAll("div").forEach(item=>{
-    const match=item.textContent.match(/\$([0-9\.]+)/);
-    if(match) total+=parseFloat(match[1]);
-  });
-  let totalDiv=document.getElementById("total");
-  totalDiv.textContent=`TOTAL BS ${total}`;
-}
-
-function procesarTicket(){
-  const printDiv=document.getElementById("printTicket");
-  printDiv.innerHTML=ticketTable.innerHTML;
+// --------------------- IMPRIMIR ---------------------
+document.getElementById("processTicket").addEventListener("click", () => {
+  const printContent = document.getElementById("printTicket");
+  printContent.innerHTML = ticketContainer.innerHTML;
+  printContent.style.display = "block";
   window.print();
-}
+  printContent.style.display = "none";
+});
