@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Animal POS - Golden King</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+
+  <!-- ---------- LOGIN ---------- -->
+  <div id="loginScreen" class="login-card">
+    <h2>Iniciar Sesión</h2>
+    <input type="text" id="usuarioInput" placeholder="Usuario">
+    <input type="password" id="claveInput" placeholder="Clave">
+    <button id="loginBtn">Ingresar</button>
+  </div>
+
+  <!-- ---------- PANTALLA PRINCIPAL ---------- -->
+  <div id="mainScreen" style="display:none;">
+    <div class="header">
+      <span id="userLabel">Usuario: </span>
+      <div class="header-buttons">
+        <button id="animalitosBtn">Animalitos</button>
+        <button id="pollaHipicaBtn">Polla Hípica</button>
+        <button onclick="salir()">Salir</button>
+      </div>
+    </div>
+
+    <div class="main">
+      <!-- ---------- ANIMALES ---------- -->
+      <div class="card animales-section">
+        <div class="animales" id="animalesContainer"></div>
+      </div>
+
+      <!-- ---------- POLLA HIPICA ---------- -->
+      <div class="card polla-hipica-section" style="display:none;">
+        <h3>Polla Hípica</h3>
+        <p>Aquí irá la sección de Polla Hípica</p>
+      </div>
+
+      <!-- ---------- TICKET ---------- -->
+      <div class="card ticket">
+        <h3>Ticket</h3>
+        <div class="table" id="ticketTable">
+          <div style="display:grid;grid-template-columns:2fr 2fr 1fr 1fr;font-weight:bold;">
+            <div>Animal</div><div>Lotería</div><div>Hora</div><div>Monto</div>
+          </div>
+        </div>
+        <div class="total" id="total">TOTAL BS 0</div>
+        <button style="background:#22c55e;" onclick="procesarTicket()">Procesar e Imprimir</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="printTicket" style="display:none;"></div>
+
+  <script src="./data/animales.js"></script>
+  <script src="./data/sorteos.js"></script>
+  <script src="./js/login.js"></script>
+  <script src="./js/app.js"></script>
+</body>
+</html>
